@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="Home" Height="1080" Width="1920" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid>
+        
         <TabControl>
 
             <TabItem Header="Foto's">
@@ -35,6 +36,7 @@
             </TabItem>
             <TabItem Header="Zoeken">
                 <Grid>
+         
                     <Label Content="Zoeken:" HorizontalAlignment="Left" Margin="100,53,0,0" VerticalAlignment="Top" Height="24" Width="255"/>
                     <TextBox x:Name="tbZoeken" HorizontalAlignment="Left" Margin="100,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="325" Height="22"/>
                     <Button x:Name="btnZoeken" Content="Zoeken" HorizontalAlignment="Left" Margin="430,77,0,0" VerticalAlignment="Top" Width="83" Height="22" Click="btnZoeken_Click"/>
