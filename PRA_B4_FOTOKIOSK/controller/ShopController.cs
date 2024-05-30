@@ -13,6 +13,7 @@ namespace PRA_B4_FOTOKIOSK.controller
     public class ShopController
     {
         public static Home Window { get; set; }
+        private List<(string ProductName, double Price, int Amount)> receiptItems = new List<(string, double, int)>();
 
         public void Start()
         {
@@ -20,7 +21,7 @@ namespace PRA_B4_FOTOKIOSK.controller
             ShopManager.SetShopPriceList("Prijzen:\nFoto 10x15: $2.50\nFoto 20x30: $4.95\nMok met foto: $9.95\nSleutelhanger met foto: $6.12\nT-shirt met foto: $11.99");
 
             // Stel de bon in onderaan het scherm
-            ShopManager.SetShopReceipt("Eindbedrag\n€");
+            ShopManager.SetShopReceipt("Eindbedrag\n€0.00");
 
             // Vul de productlijst met producten en hun prijzen
             ShopManager.Products.Add(new KioskProduct() { Name = "Foto 10x15", Price = 2.50 });
@@ -42,10 +43,9 @@ namespace PRA_B4_FOTOKIOSK.controller
 
             if (product != null && fotoId != null && amount != null)
             {
-                double total = amount.Value * product.Price / 2; // Bereken de totale prijs
-                ShopManager.AddShopReceipt($"\n{amount.Value} x {product.Name}: €{total:F2}");
-                double currentTotal = double.Parse(ShopManager.GetShopReceipt().Split('€').Last());
-                ShopManager.SetShopReceipt($"Eindbedrag\n€{currentTotal + total:F2}");
+                double total = amount.Value * product.Price;
+                receiptItems.Add((product.Name, product.Price, amount.Value));
+                UpdateReceipt();
             }
             else
             {
@@ -53,9 +53,26 @@ namespace PRA_B4_FOTOKIOSK.controller
             }
         }
 
+        private void UpdateReceipt()
+        {
+            StringBuilder receiptBuilder = new StringBuilder();
+            double totalAmount = 0;
+
+            foreach (var item in receiptItems)
+            {
+                double itemTotal = item.Price * item.Amount;
+                receiptBuilder.AppendLine($"{item.Amount} x {item.ProductName}: €{itemTotal:F2}");
+                totalAmount += itemTotal;
+            }
+
+            receiptBuilder.AppendLine($"Eindbedrag\n€{totalAmount:F2}");
+            ShopManager.SetShopReceipt(receiptBuilder.ToString());
+        }
+
         // Wordt uitgevoerd wanneer er op de Resetten knop is geklikt
         public void ResetButtonClick()
         {
+            receiptItems.Clear();
             ShopManager.SetShopReceipt("Eindbedrag\n€0.00");
         }
 
